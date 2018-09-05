@@ -50,11 +50,33 @@ public class VendedorTest {
 		Vendedor vendedor = new Vendedor(repositorioProducto, repositorioGarantia);
 
 		// act
-		vendedor.generarGarantia(producto.getCodigo());
+		vendedor.generarGarantia(producto.getCodigo(), "Sebastian");
 
 		// assert
 		Assert.assertTrue(vendedor.tieneGarantia(producto.getCodigo()));
 		Assert.assertNotNull(repositorioGarantia.obtenerProductoConGarantiaPorCodigo(producto.getCodigo()));
+
+	}
+	
+	@Test
+	public void generarGarantiaTresVocalesTest() {
+
+		// arrange
+		Producto producto = new ProductoTestDataBuilder().conNombre("Computador acer").conCodigo("F01ESA01I0").conPrecio(400000).build();
+
+		
+		repositorioProducto.agregar(producto);
+		
+		Vendedor vendedor = new Vendedor(repositorioProducto, repositorioGarantia);
+		
+		try {			
+			vendedor.generarGarantia(producto.getCodigo(), "Sebastian");
+			fail();
+			
+		} catch (GarantiaExtendidaException e) {
+			// assert
+			Assert.assertEquals(Vendedor.NO_CUENTA_CON_GARANTIA, e.getMessage());
+		}
 
 	}
 
@@ -69,10 +91,10 @@ public class VendedorTest {
 		Vendedor vendedor = new Vendedor(repositorioProducto, repositorioGarantia);
 
 		// act
-		vendedor.generarGarantia(producto.getCodigo());;
+		vendedor.generarGarantia(producto.getCodigo(), "Sebastian");;
 		try {
 			
-			vendedor.generarGarantia(producto.getCodigo());
+			vendedor.generarGarantia(producto.getCodigo(), "Sebastian");
 			fail();
 			
 		} catch (GarantiaExtendidaException e) {

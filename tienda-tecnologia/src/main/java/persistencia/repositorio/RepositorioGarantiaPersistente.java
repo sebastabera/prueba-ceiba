@@ -59,6 +59,9 @@ public class RepositorioGarantiaPersistente implements RepositorioGarantiaExtend
 		GarantiaExtendidaEntity garantiaEntity = new GarantiaExtendidaEntity();
 		garantiaEntity.setProducto(productoEntity);
 		garantiaEntity.setFechaSolicitudGarantia(garantia.getFechaSolicitudGarantia());
+		garantiaEntity.setFechaFinGarantia(garantia.getFechaFinGarantia());
+		garantiaEntity.setNombreCliente(garantia.getNombreCliente());
+		garantiaEntity.setPrecio(garantia.getPrecioGarantia());
 
 		return garantiaEntity;
 	}
