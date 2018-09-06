@@ -3,7 +3,6 @@ package dominio;
 import dominio.repositorio.RepositorioProducto;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,7 +24,7 @@ public class Vendedor {
 
     }
 
-    public void generarGarantia(String codigo, String nombreCliente) throws ParseException {    	
+    public void generarGarantia(String codigo, String nombreCliente, Date fechaPedidoGarantia) throws ParseException {    	
     	if(codigoContarTresVocales(codigo) == true) {
     		throw new GarantiaExtendidaException(NO_CUENTA_CON_GARANTIA);
     	}
@@ -34,9 +33,9 @@ public class Vendedor {
     		if(garantia == null) {
     			Producto producto = this.repositorioProducto.obtenerPorCodigo(codigo);
     			if(producto.getPrecio() > 500000) {
-    				crearGarantia(producto, 200, nombreCliente, 20);
+    				crearGarantia(producto, 200, nombreCliente, 20, fechaPedidoGarantia);
     			} else {
-    				crearGarantia(producto, 100, nombreCliente, 10); 
+    				crearGarantia(producto, 100, nombreCliente, 10, fechaPedidoGarantia); 
     			}        		  		
         	} else {
         		throw new GarantiaExtendidaException(EL_PRODUCTO_TIENE_GARANTIA);
@@ -44,13 +43,10 @@ public class Vendedor {
     	}
     }
     
-    public void crearGarantia(Producto producto, int dias, String nombreCliente, int porcentaje) throws ParseException {
-    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    	Date current_date = sdf.parse("2018-08-16");
-    	//Date current_date = new Date();
-		Date fechaFinal = obtenerDiaFinalGarantia(current_date, dias);
+    public void crearGarantia(Producto producto, int dias, String nombreCliente, int porcentaje, Date fechaPedidoGarantia) throws ParseException {
+		Date fechaFinal = obtenerDiaFinalGarantia(fechaPedidoGarantia, dias);
 		double precioGarantia = (producto.getPrecio()*porcentaje)/100;
-		GarantiaExtendida newGarantia = new GarantiaExtendida(producto, current_date, fechaFinal, precioGarantia, nombreCliente);
+		GarantiaExtendida newGarantia = new GarantiaExtendida(producto, fechaPedidoGarantia, fechaFinal, precioGarantia, nombreCliente);
 		this.repositorioGarantia.agregar(newGarantia);
     }
 

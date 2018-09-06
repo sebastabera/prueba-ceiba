@@ -55,7 +55,8 @@ public class VendedorTest {
 		Vendedor vendedor = new Vendedor(repositorioProducto, repositorioGarantia);
 
 		// act
-		vendedor.generarGarantia(producto.getCodigo(), "Sebastian");
+		Date fechaPedido = new Date();
+		vendedor.generarGarantia(producto.getCodigo(), "Sebastian", fechaPedido);
 
 		// assert
 		Assert.assertTrue(vendedor.tieneGarantia(producto.getCodigo()));
@@ -70,12 +71,14 @@ public class VendedorTest {
 		Vendedor vendedor = new Vendedor(repositorioProducto, repositorioGarantia);
 
 		// act
-		vendedor.generarGarantia(producto.getCodigo(), "Sebastian");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	Date fechaPedido = sdf.parse("2018-08-16");
+		vendedor.generarGarantia(producto.getCodigo(), "Sebastian", fechaPedido);
 		
 		GarantiaExtendida garantia = repositorioGarantia.obtener(producto.getCodigo());
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    	Date fechaEsperada = sdf.parse("2019-04-06");
+		SimpleDateFormat sdfFechaEspedada = new SimpleDateFormat("yyyy-MM-dd");
+    	Date fechaEsperada = sdfFechaEspedada.parse("2019-04-06");
 		
 		Assert.assertEquals(130000, garantia.getPrecioGarantia(), 0);
 		
@@ -89,7 +92,8 @@ public class VendedorTest {
 		Vendedor vendedor = new Vendedor(repositorioProducto, repositorioGarantia);
 
 		// act
-		vendedor.generarGarantia(producto.getCodigo(), "Sebastian");
+		Date fechaPedido = new Date();
+		vendedor.generarGarantia(producto.getCodigo(), "Sebastian", fechaPedido);
 		
 		GarantiaExtendida garantia = repositorioGarantia.obtener(producto.getCodigo());
     	
@@ -107,8 +111,9 @@ public class VendedorTest {
 		
 		Vendedor vendedor = new Vendedor(repositorioProducto, repositorioGarantia);
 		
-		try {			
-			vendedor.generarGarantia(producto.getCodigo(), "Sebastian");
+		try {		
+			Date fechaPedido = new Date();
+			vendedor.generarGarantia(producto.getCodigo(), "Sebastian", fechaPedido);
 			fail();
 			
 		} catch (GarantiaExtendidaException e) {
@@ -128,11 +133,10 @@ public class VendedorTest {
 		
 		Vendedor vendedor = new Vendedor(repositorioProducto, repositorioGarantia);
 
-		// act
-		vendedor.generarGarantia(producto.getCodigo(), "Sebastian");;
+		Date fechaPedido = new Date();
+		vendedor.generarGarantia(producto.getCodigo(), "Sebastian", fechaPedido);
 		try {
-			
-			vendedor.generarGarantia(producto.getCodigo(), "Sebastian");
+			vendedor.generarGarantia(producto.getCodigo(), "Sebastian", fechaPedido);
 			fail();
 			
 		} catch (GarantiaExtendidaException e) {
