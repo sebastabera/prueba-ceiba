@@ -2,6 +2,8 @@ package dominio;
 
 import dominio.repositorio.RepositorioProducto;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -23,7 +25,7 @@ public class Vendedor {
 
     }
 
-    public void generarGarantia(String codigo, String nombreCliente) {    	
+    public void generarGarantia(String codigo, String nombreCliente) throws ParseException {    	
     	if(codigoContarTresVocales(codigo) == true) {
     		throw new GarantiaExtendidaException(NO_CUENTA_CON_GARANTIA);
     	}
@@ -31,7 +33,7 @@ public class Vendedor {
     		GarantiaExtendida garantia = this.repositorioGarantia.obtener(codigo);
     		if(garantia == null) {
     			Producto producto = this.repositorioProducto.obtenerPorCodigo(codigo);
-    			if(producto.getPrecio() < 500000) {
+    			if(producto.getPrecio() > 500000) {
     				crearGarantia(producto, 200, nombreCliente, 20);
     			} else {
     				crearGarantia(producto, 100, nombreCliente, 10); 
@@ -42,8 +44,10 @@ public class Vendedor {
     	}
     }
     
-    public void crearGarantia(Producto producto, int dias, String nombreCliente, int porcentaje) {
-    	Date current_date = new Date();
+    public void crearGarantia(Producto producto, int dias, String nombreCliente, int porcentaje) throws ParseException {
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	Date current_date = sdf.parse("2018-08-16");
+    	//Date current_date = new Date();
 		Date fechaFinal = obtenerDiaFinalGarantia(current_date, dias);
 		double precioGarantia = (producto.getPrecio()*porcentaje)/100;
 		GarantiaExtendida newGarantia = new GarantiaExtendida(producto, current_date, fechaFinal, precioGarantia, nombreCliente);
@@ -81,7 +85,7 @@ public class Vendedor {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(fecha);
 			int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-			if (dayOfWeek != Calendar.SUNDAY && dayOfWeek != Calendar.MONDAY) {
+			if (dayOfWeek != Calendar.MONDAY) {
 				contDays++;				
 			}
 			calendar.add(Calendar.DAY_OF_YEAR, 1);

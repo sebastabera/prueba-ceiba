@@ -2,12 +2,17 @@ package dominio.integracion;
 
 import static org.junit.Assert.fail;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import dominio.Vendedor;
+import dominio.GarantiaExtendida;
 import dominio.Producto;
 import dominio.excepcion.GarantiaExtendidaException;
 import dominio.repositorio.RepositorioProducto;
@@ -42,7 +47,7 @@ public class VendedorTest {
 	}
 
 	@Test
-	public void generarGarantiaTest() {
+	public void generarGarantiaTest() throws ParseException {
 
 		// arrange
 		Producto producto = new ProductoTestDataBuilder().conNombre(COMPUTADOR_LENOVO).build();
@@ -58,8 +63,41 @@ public class VendedorTest {
 
 	}
 	
+	@Test	
+	public void garantiaMayor() throws ParseException {
+		Producto producto = new ProductoTestDataBuilder().conNombre(COMPUTADOR_LENOVO).conCodigo("F01TSA0150").conPrecio(650000).build();
+		repositorioProducto.agregar(producto);
+		Vendedor vendedor = new Vendedor(repositorioProducto, repositorioGarantia);
+
+		// act
+		vendedor.generarGarantia(producto.getCodigo(), "Sebastian");
+		
+		GarantiaExtendida garantia = repositorioGarantia.obtener(producto.getCodigo());
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	Date fechaEsperada = sdf.parse("2019-04-06");
+		
+		Assert.assertEquals(130000, garantia.getPrecioGarantia(), 0);
+		
+		Assert.assertEquals(fechaEsperada, garantia.getFechaFinGarantia());
+	}
+	
+	@Test	
+	public void garantiaMenor() throws ParseException {
+		Producto producto = new ProductoTestDataBuilder().conNombre(COMPUTADOR_LENOVO).conCodigo("F01TSA0150").conPrecio(450000).build();
+		repositorioProducto.agregar(producto);
+		Vendedor vendedor = new Vendedor(repositorioProducto, repositorioGarantia);
+
+		// act
+		vendedor.generarGarantia(producto.getCodigo(), "Sebastian");
+		
+		GarantiaExtendida garantia = repositorioGarantia.obtener(producto.getCodigo());
+    	
+		Assert.assertEquals(45000, garantia.getPrecioGarantia(), 0);
+	}
+	
 	@Test
-	public void generarGarantiaTresVocalesTest() {
+	public void generarGarantiaTresVocalesTest() throws ParseException {
 
 		// arrange
 		Producto producto = new ProductoTestDataBuilder().conNombre("Computador acer").conCodigo("F01ESA01I0").conPrecio(400000).build();
@@ -81,7 +119,7 @@ public class VendedorTest {
 	}
 
 	@Test
-	public void productoYaTieneGarantiaTest() {
+	public void productoYaTieneGarantiaTest() throws ParseException {
 
 		// arrange
 		Producto producto = new ProductoTestDataBuilder().conNombre(COMPUTADOR_LENOVO).build();

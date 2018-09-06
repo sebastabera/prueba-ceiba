@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 
 import dominio.Vendedor;
-import dominio.GarantiaExtendida;
 import dominio.Producto;
 import dominio.repositorio.RepositorioProducto;
 import dominio.repositorio.RepositorioGarantiaExtendida;
